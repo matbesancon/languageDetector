@@ -14,10 +14,13 @@ object Detector {
   def main(args: Array[String]) = {
     println("Starting program")
     println("Possible languages")
-    println(dic.keys.mkString)
+    dic.keys foreach println
     val text = io.StdIn.readLine
     val l = find_language(text,dic)
+    print("Language: ")
     println(l)
+    print("Score: ")
+    println(compareFreq(dic.get(l),countFreq(text)))
   }
 
   // methods building features
@@ -41,6 +44,7 @@ object Detector {
     return countLang.keys.map((c:Char)=>Math.abs(countLang.apply(c)-
     countText.apply(c))).sum
   }
+
 }
 
 // 2. letter transition frequency: Map (letter1,letter2)->frequency
