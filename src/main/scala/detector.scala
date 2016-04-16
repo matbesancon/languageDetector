@@ -10,6 +10,7 @@ object Detector {
     val lang = readf.map(_.apply(0)).distinct
     lang.map((l:String)=>(l,readf filter{_(0)==l} map((lis)=>(lis(1)(0),lis(2).toDouble))toMap)).toMap
   }
+
   val dic = getDic
   def main(args: Array[String]) = {
     println("Starting program")
@@ -20,23 +21,30 @@ object Detector {
     print("Language: ")
     println(l)
     print("Score: ")
-    println(compareFreq(dic.get(l),countFreq(text)))
+    println(compareFreq(dic.apply(l),countFreq(text)))
   }
 
   // methods building features
   // 1. simple letter freq: Map letter->frequency
-  def countFreq(text: List[String]):Map[Char,Double] = {
+  def countFreq(text: String):Map[Char,Double] = {
     val count = "abcdefghijklmnopqrtstuvwxyz".toList
-    return count.map((c:Char)=>(c->text.mkString.count(_==c).toDouble/
-                                   text.mkString.length.toDouble)).toMap
+    return count.map((c:Char)=>(c->text.count(_==c).toDouble/
+                                   text.length.toDouble)).toMap
   }
+
+  // Computes the score of each language for the text
+  // def comp_language(text:String,countRef: Map[String, Map[Char, Double]]):
+  // Iterable[String] = {
+  //   val c = countFreq(text.toList.map(_.toString))
+  //   return countRef map {tup => (tup,compareFreq(tup._2,c))}
+  // }
 
   // finds the best fitting language from the frequency count and
   def find_language(text:String,countRef: Map[String, Map[Char, Double]]):
-  Iterable[String] = {
-    val c = countFreq(text.toList.map(_.toString))
+  String = {
+    val c = countFreq(text)
     return countRef.filter((count)=>compareFreq(count._2,c)==
-      countRef.values.map(compareFreq(_,c)).min).keys
+      countRef.values.map(compareFreq(_,c)).min).keys.toList.apply(0)
   }
 
   def compareFreq(countLang:Map[Char,Double],countText:Map[Char,Double]):
