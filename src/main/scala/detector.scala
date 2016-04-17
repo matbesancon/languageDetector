@@ -1,4 +1,5 @@
 import io.Source
+import language.postfixOps
 
 // TODO: way to store dictionnary in a text file?
 
@@ -48,6 +49,14 @@ object Detector {
     val count = "abcdefghijklmnopqrtstuvwxyz".toList
     return count.map((c:Char)=>(c->text.count(_==c).toDouble/
                                    text.length.toDouble)).toMap
+  }
+
+  def countTrans(text: String):Map[(Char,Char),Double] = {
+    val letters = "abcdefghijklmnopqrtstuvwxyz".toList
+    val transitions = letters map {letter => letters map {(letter,_)}} flatten
+    val textTrans = Range(0,text.length-1) map {ind:Int => (text.apply(ind),text.apply(ind+1))}
+    return transitions.map((t:(Char,Char))=>(t->textTrans.count(_==t).toDouble/
+                                   textTrans.length.toDouble)).toMap
   }
 
   // Computes the score of each language for the text
