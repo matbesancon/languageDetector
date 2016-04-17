@@ -20,15 +20,26 @@ object Detector {
     dic.keys foreach println
     val text = io.StdIn.readLine
     // computing note for each language
-    println("--- Languages scoring")
-    val notes = comp_language(text,dic)
-    notes.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(""+tup._1+": "+tup._2))
-    val l = find_language(text,dic)
+    println("--- Languages scoring: L1 ---")
+    val notes1 = comp_language(text,dic,compareL1)
+    notes1.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(""+tup._1+": "+tup._2))
+    val l1 = find_language(text,dic,compareL1)
     println("----Decision----")
     print("Language: ")
-    println(l)
+    println(l1)
     print("Score: ")
-    println(compareFreq(dic.apply(l),countFreq(text)))
+    println(compareL1(dic.apply(l1),countFreq(text)))
+
+    println("--- Languages scoring: L2 ---")
+    val notes2 = comp_language(text,dic,compareL2)
+    notes2.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(""+tup._1+": "+tup._2))
+    val l2 = find_language(text,dic,compareL2)
+    println("----Decision----")
+    print("Language: ")
+    println(l2)
+    print("Score: ")
+    println(compareL2(dic.apply(l2),countFreq(text)))
+
   }
 
   // methods building features
@@ -40,26 +51,41 @@ object Detector {
   }
 
   // Computes the score of each language for the text
-  def comp_language(text:String,countRef: Map[String, Map[Char, Double]]):
+  def comp_language(text:String,countRef: Map[String, Map[Char, Double]],
+    compFunc: Function2[Map[Char,Double],Map[Char,Double],Double]):
       Map[String,Double] = {
     val cText = countFreq(text)
-    return countRef map {tup => (tup._1,compareFreq(tup._2,cText))}
+    return countRef map {tup => (tup._1,compFunc(tup._2,cText))}
   }
 
   // finds the best fitting language from the frequency count and
-  def find_language(text:String,countRef: Map[String, Map[Char, Double]]):
+  def find_language(text:String,countRef: Map[String, Map[Char, Double]],
+    compFunc: Function2[Map[Char,Double],Map[Char,Double],Double]):
     String = {
     val c = countFreq(text)
-    return countRef.filter((count)=>compareFreq(count._2,c)==
-      countRef.values.map(compareFreq(_,c)).min).keys.toList.apply(0)
+    return countRef.filter((count)=>compFunc(count._2,c)==
+      countRef.values.map(compFunc(_,c)).min).keys.toList.apply(0)
   }
 
-  def compareFreq(countLang:Map[Char,Double],countText:Map[Char,Double]):
+  def compareL1(countLang:Map[Char,Double],countText:Map[Char,Double]):
     Double = {
     val mapfreq = countLang.keys.map((c:Char)=>Math.abs(countLang.apply(c)-
     countText.apply(c)))
-    return mapfreq.sum/mapfreq.size
+    return 1.0*mapfreq.sum/mapfreq.size
   }
+
+  def compareL2(countLang:Map[Char,Double],countText:Map[Char,Double]):
+    Double = {
+    val mapfreq = countLang.keys.map((c:Char)=>Math.pow(countLang.apply(c)-
+    countText.apply(c),2))
+    return 1.0*mapfreq.sum/mapfreq.size
+  }
+  // def compareFreq(countLang:Map[Char,Double],countText:Map[Char,Double]):
+  //   Double = {
+  //   val mapfreq = countLang.keys.map((c:Char)=>Math.abs(countLang.apply(c)-
+  //   countText.apply(c)))
+  //   return mapfreq.sum/mapfreq.size
+  // }
 
 }
 
