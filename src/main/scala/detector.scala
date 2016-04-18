@@ -4,25 +4,29 @@ import language.postfixOps
 // TODO: fix main to adapt to new function definition
 
 object Detector {
+// TODO: abstract type
+  // abstract class Comparable[T]
 
   // reading dictionnary
-  def getDic = {
-    val readf = Source.fromFile("src/main/dict.txt").getLines.toList map {
+  def getDic(source:String) = {
+    val readf = Source.fromFile(source).getLines.toList map {
       _.split(" ").toList}
     val lang = readf.map(_.apply(0)).distinct
     lang.map((l:String)=>(l,readf filter{_(0)==l} map(
       (lis)=>(lis(1)(0),lis(2).toDouble))toMap)).toMap
   }
 
-  val dic = getDic
+  val dic = getDic("src/main/dict.txt")
+
   def main(args: Array[String]) = {
     println("Starting program")
     println("Possible languages")
     dic.keys foreach println
     val text = io.StdIn.readLine
+
     // computing note for each language
     // println("--- Languages scoring: L1 ---")
-    // val notes1 = comp_language(text,dic,compareL1)
+    // val notes1 = comp_language(text,dic,compareL1,countFreq)
     // notes1.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(
     //   ""+tup._1+": "+tup._2))
     // val l1 = find_language(text,dic,compareL1)
@@ -63,9 +67,9 @@ object Detector {
   }
 
   // Computes the score of each language for the text
-  def comp_language(text:String,countRef: Map[String, Map[Equals, Double]],
-    compFunc: Function2[Map[Equals,Double],Map[Equals,Double],Double],
-    compText:Function1[String,Map[Equals,Double]]):
+  def comp_language[Atomic](text:String,countRef: Map[String,Map[Atomic,Double]],
+    compFunc: Function2[Map[Atomic,Double],Map[Atomic,Double],Double],
+    compText:Function1[String,Map[Atomic,Double]]):
       Map[String,Double] = {
     val cText = compText(text)
     return countRef map {tup => (tup._1,compFunc(tup._2,cText))}
@@ -86,16 +90,16 @@ object Detector {
     return scores.filter(_==scores.values.min).keys.head
   }
 
-  def compareL1(countLang:Map[Equals,Double],countText:Map[Equals,Double]):
+  def compareL1[Atomic](countLang:Map[Atomic,Double],countText:Map[Atomic,Double]):
     Double = {
-    val mapfreq = countLang.keys.map((el:Equals)=>Math.abs(countLang.apply(el)-
+    val mapfreq = countLang.keys.map((el:Atomic)=>Math.abs(countLang.apply(el)-
     countText.apply(el)))
     return 1.0*mapfreq.sum/mapfreq.size
   }
 
-  def compareL2(countLang:Map[Equals,Double],countText:Map[Equals,Double]):
+  def compareL2[Atomic](countLang:Map[Atomic,Double],countText:Map[Atomic,Double]):
     Double = {
-    val mapfreq = countLang.keys.map((el:Equals)=>Math.pow(countLang.apply(el)-
+    val mapfreq = countLang.keys.map((el:Atomic)=>Math.pow(countLang.apply(el)-
     countText.apply(el),2))
     return 1.0*mapfreq.sum/mapfreq.size
   }
