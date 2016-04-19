@@ -7,7 +7,7 @@ object Detector {
 // TODO: abstract type
   // abstract class Comparable[T]
 
-  // reading dictionnary
+  // reading dictionary
   def getDic(source:String) = {
     val readf = Source.fromFile(source).getLines.toList map {
       _.split(" ").toList}
@@ -16,7 +16,17 @@ object Detector {
       (lis)=>(lis(1)(0),lis(2).toDouble))toMap)).toMap
   }
 
+  // reading transition dictionary
+  def getDicTrans(source:String) = {
+    val readf = Source.fromFile(source).getLines.toList map {
+      _.split(" ").toList}
+    val lang = readf.map(_.apply(0)).distinct
+    lang.map((l:String)=>(l,readf filter{_(0)==l} map(
+      (lis)=>((lis(1).head,lis(2).head),lis(3).toDouble))toMap)).toMap
+  }
+
   val dic = getDic("src/main/dict.txt")
+  val dicTrans = getDicTrans("src/main/dicTrans.txt")
 
   def main(args: Array[String]) = {
     println("Starting program")
