@@ -4,8 +4,6 @@ import language.postfixOps
 // TODO: find_language not working
 
 object Detector {
-// TODO-done: abstract type -->
-  // abstract class Comparable[T]
 
   // reading dictionary
   def getDic(source:String) = {
@@ -26,7 +24,8 @@ object Detector {
   }
 
   val dic: Map[String,Map[String,Double]] = getDic("src/main/dict.txt")
-  val dicTrans: Map[String,Map[String,Double]] = getDicTrans("src/main/dicTrans.txt")
+  val dicTrans: Map[String,Map[String,Double]] = getDicTrans(
+                                                   "src/main/dicTrans.txt")
 
   // finds the best fitting language from the score of each one
   def find_language(scores: Map[String,Double]):
