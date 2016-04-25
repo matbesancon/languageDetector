@@ -49,9 +49,9 @@ object Detector {
   }
 
   def main(args: Array[String]) = {
-    println("Starting program")
-    println("Possible languages")
-    dic.keys foreach println
+    //println("Starting program")
+    //println("Possible languages")
+    //dic.keys foreach println
     val text = io.StdIn.readLine
 
     // computing note for each language
@@ -59,13 +59,13 @@ object Detector {
     val notes1trans:Map[String,Double] = comp_language(text,dicTrans,compareL1,countTrans)
 
     // print notes and associated scores
-    println("--- Languages scoring: L1, letters ---")
+    // println("--- Languages scoring: L1, letters ---")
     notes1.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(
-      ""+tup._1+": "+tup._2))
+      "l1 letters "+tup._1+": "+tup._2))
 
-    println("--- Languages scoring: L1, transitions ---")
+    // println("--- Languages scoring: L1, transitions ---")
     notes1trans.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(
-      ""+tup._1+": "+tup._2))
+      "l1 trans"+tup._1+": "+tup._2))
 
 
     // computing note for each language
@@ -73,11 +73,11 @@ object Detector {
     val notes2trans:Map[String,Double] = comp_language(text,dicTrans,compareL2,countTrans)
 
     // print notes and associated scores
-    println("--- Languages scoring: L2, letters ---")
+    // println("--- Languages scoring: L2, letters ---")
     notes2.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(
       ""+tup._1+": "+tup._2))
 
-    println("--- Languages scoring: L2, transitions ---")
+    // println("--- Languages scoring: L2, transitions ---")
     notes2trans.toSeq.sortWith(_._1 < _._1).foreach(tup=>println(
       ""+tup._1+": "+tup._2))
 
