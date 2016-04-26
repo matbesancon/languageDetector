@@ -1,7 +1,7 @@
 import io.Source
 import language.postfixOps
 
-// TODO: find_language not working
+// TODO: text in argument instead of prompt
 
 object Detector {
 
