@@ -51,7 +51,14 @@ object Detector {
     //println("Starting program")
     //println("Possible languages")
     //dic.keys foreach println
-    val text = io.StdIn.readLine
+    var text:String = ""
+
+    if (args.length==0) {
+      println("No text file given, type a text in a given language.")
+      text = io.StdIn.readLine
+    }else{
+      text = Source.fromFile(args.head).getLines.toList.mkString(" ")
+    }
 
     // computing note for each language
     val notes1:Map[String,Double] = comp_language(text,dic,compareL1,countFreq)
